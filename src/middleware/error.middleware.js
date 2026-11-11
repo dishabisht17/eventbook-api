@@ -28,7 +28,7 @@ const isOperational = err.isOperational===true;
 if (isOperational && !err.statusCode) {
     console.error("AppError created WITHOUT a status code:\n", err.stack);
   }
-const status=isOperational?err.statusCode || 500:500;
+const status=isOperational? (err.statusCode || 500):500;
 if(!isOperational) console.error(err);
 res.status(status).json({
     success:false,
