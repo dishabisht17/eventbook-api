@@ -8,7 +8,7 @@ const make =(windowMs,limit,extra ={}) =>
         legacyHeaders : false,
         skip:() =>process.env.NODE_ENV === 'test',
         handler:(req,res,next) =>
-            next(new AppError("Two many requests,please try again later",429)),
+            next(new AppError("Too many requests,please try again later",429)),
         ...extra,
     })
     const apiLimiter = make(15*60*1000,300);

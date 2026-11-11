@@ -55,7 +55,7 @@ const refresh = async(req,res)=>{
     }
 
 const user = await User.findById(record.user);
-if(!user) throw new AppError("Invalid fresh token",401);
+if(!user) throw new AppError("Invalid refresh token",401);
 const accessToken= await startSession(user,res);
 res.status(200).json({success:true,accessToken});
 }
@@ -94,13 +94,14 @@ const forgotPassword = async(req,res) =>{
         )
        if (process.env.NODE_ENV !== "production") {
       console.log(`[DEV] Reset token for ${user.email}: ${raw}`);
+       }
       const link = `${process.env.CLIENT_URL || "http://localhost:5173"}/reset-password?token=${raw}`;
       sendEmail({
         to:user.email,
         subject:"Reset your EventBook password",
         text:`Use this link to reset your password(valid for 15 minutes) :\n${link}\n\nIf you did not ask fro this,ignore this email`,
       }).catch((err) => console.error("Reset email failed:",err.message)  );
-    }
+    
     }
     res.status(200).json({
         success:true,
@@ -124,4 +125,26 @@ const resetPassword = async(req,res) =>{
         res.status(200).json({success:true,message:"Password updated. Please log in again."})
 }
 
-module.exports = {register,login,refresh,logout,me,forgotPassword,resetPassword};
+const changePassword = async (req,res) =>{
+    const {currentPassword,newPassword} = req.body;
+    const user = await User.findById(req.user._id).select("+passwordHash");
+        if(!user) throw new AppError("Invalid or expired token", 401)
+const ok = await bcrypt.compare(currentPassword,user.passwordHash);
+        if(!ok) throw new AppError("Current password is incorrect",403);
+        const passwordHash = await bcrypt.hash(newPassword,12);
+        await User.updateOne(
+            {_id:user._id},
+            {
+                $set:{passwordHash},
+                $unset:{passwordResetHash:1,passwordResetExpires:1},
+            }
+        )
+        await RefreshToken.updateMany(
+            {user:user._id,revokedAt:null},
+            {$set : {revokedAt: new Date()}}
+        )
+        const accessToken = await startSession(user,res);
+        res.status(200).json({success:true,message:"Password updated",accessToken})
+}
+
+module.exports = {register,login,refresh,logout,me,forgotPassword,resetPassword,changePassword};

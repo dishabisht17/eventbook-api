@@ -24,11 +24,11 @@ const changePasswordSchema = z
     currentPassword : z.string().min(1).max(72),
     newPassword: z
     .string()
-    .min(8,"password must be at least 8 characters")
+    .min(1,"password must be at least 8 characters")
     .max(72,"password must be at most 72 characters"),
 })
 .refine((d) =>d.currentPassword !== d.newPassword,{
     message:"New password must be different from the current one",
-    path:
+    path:["newPassword"]
 })
-module.exports={registerSchema,loginSchema,forgotPasswordSchema,resetPasswordSchema}
+module.exports={registerSchema,loginSchema,forgotPasswordSchema,resetPasswordSchema,changePasswordSchema}

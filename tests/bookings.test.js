@@ -36,7 +36,7 @@ expect(after.body.data.availableSeats).toBe(0);
         const event = await createEvent(admin.token);
         const booking = (await book(event._id,owner.token)).body.data;
         const url = `/api/v1/bookings/${booking._id}`;
-   console.log("BOOKING:", booking);
+   
         expect ((await request(app).get(url).set(...bearer(owner.token))).status).toBe(200);
         expect ((await request(app).get(url).set(...bearer(admin.token))).status).toBe(200);
         expect ((await request(app).get(url).set(...bearer(stranger.token))).status).toBe(404);
