@@ -36,8 +36,7 @@ const updateFields = async (req,res) =>{
     const event = await Event.findByIdAndUpdate(
         parseObjectId(req.params.id),
         {$set:req.body},
-        {new:true,runValidators:true}
-    );
+{returnDOcument: "after" ,runValidators:true}    );
     if(!event)  throw new AppError("Event not found",404);
 res.status(200).json({success:true,data:event});
  

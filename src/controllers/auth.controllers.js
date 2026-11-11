@@ -99,8 +99,7 @@ const forgotPassword = async(req,res) =>{
       sendEmail({
         to:user.email,
         subject:"Reset your EventBook password",
-        text:`Use this link to reset your password(valid for 15 minutes) :\n${link}\n\nIf you did not ask fro this,ignore this email`,
-      }).catch((err) => console.error("Reset email failed:",err.message)  );
+text: `Use this link to reset your password (valid for 15 minutes):\n${link}\n\nIf you did not ask for this, ignore this email.`,      }).catch((err) => console.error("Reset email failed:",err.message)  );
     
     }
     res.status(200).json({

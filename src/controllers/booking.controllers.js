@@ -9,7 +9,7 @@ const createBooking = async(req,res) =>{
     const event=await Event.findOneAndUpdate(
 {        _id:eventId,availableSeats:{$gte:seats}},
 {$inc:{availableSeats:-seats}},
-{new:true,runValidators:true}
+{returnDOcument: "after" ,runValidators:true}
     );
     if(!event){
         const exists = await Event.exists({_id:eventId});

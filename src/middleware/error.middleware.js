@@ -1,6 +1,5 @@
 const AppError = require("../utils/AppError");
 const notFound = (req, res, next) => {
-  console.log("NOT FOUND:", req.method, JSON.stringify(req.originalUrl));
   next(new AppError(`Route ${req.originalUrl} not found`, 404));
 };
 const errorHandler = (err,req,res,next)=>{
