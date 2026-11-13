@@ -24,7 +24,7 @@ const changePasswordSchema = z
     currentPassword : z.string().min(1).max(72),
     newPassword: z
     .string()
-    .min(1,"password must be at least 8 characters")
+    .min(8,"password must be at least 8 characters")
     .max(72,"password must be at most 72 characters"),
 })
 .refine((d) =>d.currentPassword !== d.newPassword,{

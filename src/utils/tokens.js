@@ -19,12 +19,16 @@ const createRefreshToken = async(userId) =>{
         expiresAt:new Date(Date.now()+ REFRESH_DAYS * DAY_MS)
     })
     return raw;
-}
+}  
+    const isProd =process.env.NODE_ENV === 'production';
+
 const cookieOptions={
-    httpOnly:true,
-    secure:process.env.NODE_ENV=== "production",
-    sameSite: "lax",
+  httpOnly:true,
+    secure:isProd,
+    sameSite: isProd? "none": "lax",
     path:"/api/v1/auth",
+     
+  
 }
 const setRefreshCookie = (res,raw) =>{
     res.cookie("refreshToken",raw,{...cookieOptions,maxAge:REFRESH_DAYS*DAY_MS})

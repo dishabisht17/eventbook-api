@@ -61,6 +61,15 @@ expect(res.body.accessToken).toBeDefined();
         expect(replay.status).toBe(401);
 
     })
+    it("rejects a refresh request from an unknown origin with 403",async ()=>{
+        const {cookie} = await registerUser("o@test.com");
+        const res=await request(app)
+        .post(`${API}/refresh`)
+        .set("Cookie",cookie)
+            .set("Origin","http://evil.com");
+            expect(res.status).toBe(403);
+        
+    })
 })
 describe("changePassword",()=>{
    const change = (token,body) =>
@@ -91,4 +100,9 @@ const newLogin = await request(app).post(`${API}/login`).send({email: "cp3@test.
     expect(newLogin.status).toBe(200);
 
     })
+    it("rejects a too-short new password with 422", async () => {
+  const { token } = await registerUser("cp4@test.com");
+  const res = await change(token, { currentPassword: "secret123", newPassword: "s123" });
+  expect(res.status).toBe(422);
+});
 })

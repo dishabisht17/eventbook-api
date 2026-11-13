@@ -25,15 +25,14 @@ if(err.name ==="ValidationError"){
     err =new AppError("Validaion failed",422,details);
 }
 const isOperational = err.isOperational===true;
-if (isOperational && !err.statusCode) {
-    console.error("AppError created WITHOUT a status code:\n", err.stack);
-  }
 const status=isOperational? (err.statusCode || 500):500;
-if(!isOperational) console.error(err);
+
+if (!isOperational ) console.error(`[${req.id}]`,err);
 res.status(status).json({
     success:false,
     message:isOperational?err.message:"Internal Server error",
 ...(err.details && {errors:err.details}),
+...(!isOperational && {requestId : req.id}),
 })
 }
 module.exports={notFound,errorHandler};
