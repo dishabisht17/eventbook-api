@@ -6,8 +6,8 @@ const getTransporter =() =>{
             if(process.env.SMTP_HOST){
                 return nodemailer.createTransport({
                     host:process.env.SMTP_HOST,
-                    port:Number(process.env.PORT_HOST) ||587,
-                    secure:Number(process.env.PORT_HOST) === 465,
+                    port:Number(process.env.SMTP_HOST) ||587,
+                    secure:Number(process.env.SMTP_HOST) === 465,
                     auth:{user:process.env.SMTP_USER,pass:process.env.SMTP_PASS},
                 })
             }
